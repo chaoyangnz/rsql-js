@@ -13,7 +13,7 @@ or =
   }
 
 and =
-  head:constraint tail:(";" constraint)* {
+  head:exp tail:(";" exp)* {
     if(tail.length == 0) return head;
     var result = [head];
     for (var i = 0; i < tail.length; i++) {
@@ -22,7 +22,7 @@ and =
     return { operator: "AND", operands: result };
   }
 
-node = logical / comparison
+exp = logical / comparison
 
 logical = 
   "(" o:or ")" { return o; }
