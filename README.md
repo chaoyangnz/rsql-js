@@ -1,3 +1,5 @@
+~[](https://github.com/chaoyangnz/rsql-js/workflows/Node%20CI/badge.svg]
+
 # RSQL parser and builder for Javascript
 
 ## Usage:
