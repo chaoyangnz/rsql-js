@@ -5,29 +5,32 @@ export enum LogicalOperator {
 
 export enum ComparisonOperator {
   Equals = '==',
-  Search = '=q=',
-  Like = '=like=',
-  In = '=in=',
   NotEquals = '!=',
-  NotLike = '=notlike=',
-  LesserThan = '=lt=',
-  LesserThanOrEqualTo = '=le=',
-  GreaterThan = '=gt=',
-  GreaterThanOrEqualTo = '=ge=',
-  RangeFromTo = '=rng='
+  Like = '~=',
+  NotLike = '!~=',
+  LesserThan = '<',
+  LesserThanOrEqualTo = '<=',
+  GreaterThan = '>',
+  GreaterThanOrEqualTo = '>=',
+  In = '=in=',
+  Out = '=out=',
+  LesserThanAlt = '=lt=',
+  LesserThanOrEqualToAlt = '=le=',
+  GreaterThanAlt = '=gt=',
+  GreaterThanOrEqualToAlt = '=ge='
 }
 
 export type Value = string | number | boolean | null
 
-export interface ComparisonNode {
+export interface Comparison {
   selector: string
   comparison: ComparisonOperator
   arguments: Value | Value[]
 }
 
-export type Node = LogicalNode | ComparisonNode
+export type Expression = Logical | Comparison
 
-export interface LogicalNode {
+export interface Logical {
   operator: LogicalOperator
-  operands: Node[]
+  operands: Expression[]
 }

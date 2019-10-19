@@ -1,5 +1,5 @@
-import * as peg from "pegjs";
-import { Node } from './types';
+import * as peg from 'pegjs'
+import { Expression } from './types'
 
 const grammar = `
 or = 
@@ -12,8 +12,8 @@ or =
     return { operator: "OR", operands: result};
   }
 
-and =
-  head:exp tail:(";" exp)* {
+and = 
+  head:expression tail:(";" expression)* {
     if(tail.length == 0) return head;
     var result = [head];
     for (var i = 0; i < tail.length; i++) {
@@ -22,9 +22,9 @@ and =
     return { operator: "AND", operands: result };
   }
 
-exp = logical / comparison
+expression = group / comparison
 
-logical = 
+group = 
   "(" o:or ")" { return o; }
 
 comparison = 
@@ -35,13 +35,16 @@ comparison =
 selector = unreserved_str
 
 comparison_op  = 
-  $comp_eq_ne / $comp_gt_lt
+  $comp_sym / $comp_eq_ne / $comp_gt_lt
 
 comp_eq_ne     = 
-  ( "=" alpha* / "!" ) "="
+  ( "=" / "!~" / "!" / "~" ) "="
 
 comp_gt_lt     = 
-  ( ">" / "<" ) "="
+  ">=" / ">" / "<=" / "<" 
+  
+comp_sym     =
+  "=" ( "gt" / "lt" / "ge" / "le" / "in" / "out" ) "="
 
 alpha = [a-z] / [A-Z]
 
@@ -55,7 +58,7 @@ arguments =
     return result;
   } / value
 
-value = double_quoted / single_quoted / integer / unreserved_str
+value = double_quoted / single_quoted / float / integer / unreserved_str
 
 unreserved_str = $unreserved+
 
@@ -74,12 +77,14 @@ escaped =
 
 all_chars = $. 
 
-integer
+integer "integer"
   = digits:[0-9]+ { return parseInt(digits.join(""), 10); }
+  
+float "float"
+  = left:[0-9]+ "." right:[0-9]+ { return parseFloat(left.join("") + "." +  right.join("")); }
 
 _ "whitespace" = [ \\t]*
 `
-
 
 /**
  * Exports a parser for the rsql grammar
@@ -88,13 +93,13 @@ _ "whitespace" = [ \\t]*
  *
  * <code>parser.parse("xbool==false")</code> returns
  * <code>{
- *   "selector": "xbool",
+ *   "selector": "enabled",
  *   "comparison": "==",
  *   "arguments": "false"
  * }</code>
  */
 const parser = peg.generate(grammar)
 
-export function parse(query: string): Node {
+export function parse(query: string): Expression {
   return parser.parse(query)
 }

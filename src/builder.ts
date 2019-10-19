@@ -1,5 +1,5 @@
 import { encode } from 'mdurl'
-import { ComparisonNode, LogicalNode, LogicalOperator, Node, Value } from './types'
+import { Comparison, Logical, LogicalOperator, Expression, Value } from './types'
 
 export * from './types'
 
@@ -32,24 +32,24 @@ function toRsqlValue(value: Value | Value[]): string {
   return containsRsqlReservedCharacter(value) ? rsqlEscape(value) : value
 }
 
-export function build(node: Node): string {
-  const value = buildReadable(node);
+export function build(node: Expression): string {
+  const value = buildReadable(node)
   return encode(value, encode.componentChars + '=:,;"\'<>#', false)
 }
 
-export function buildReadable(node: Node): string {
-  return (node as LogicalNode).operator
-    ? buildRsqlFromComplexNode(node as LogicalNode)
-    : buildRsqlFromSimpleNode(node as ComparisonNode)
+export function buildReadable(node: Expression): string {
+  return (node as Logical).operator
+    ? buildRsqlFromComplexNode(node as Logical)
+    : buildRsqlFromSimpleNode(node as Comparison)
 }
 
-function buildRsqlFromSimpleNode(comparison: ComparisonNode): string {
+function buildRsqlFromSimpleNode(comparison: Comparison): string {
   return (
     toRsqlValue(comparison.selector) + comparison.comparison + toRsqlValue(comparison.arguments)
   )
 }
 
-function buildRsqlFromComplexNode({ operator, operands }: LogicalNode): string {
+function buildRsqlFromComplexNode({ operator, operands }: Logical): string {
   return operands
     .map(child => getChildRsql(operator === LogicalOperator.And && operands.length > 1, child))
     .join(operator === LogicalOperator.Or ? ',' : ';')
@@ -68,14 +68,14 @@ function buildRsqlFromComplexNode({ operator, operands }: LogicalNode): string {
  * @param node the child node to transform to rsql
  * @returns {string}
  */
-function getChildRsql(perhapsWrap: boolean, node: Node): string {
+function getChildRsql(perhapsWrap: boolean, node: Expression): string {
   const rsql = buildReadable(node)
-  if ((node as LogicalNode).operands && (node as LogicalNode).operands.length === 1) {
+  if ((node as Logical).operands && (node as Logical).operands.length === 1) {
     // Skip this node, render the only child node
-    return getChildRsql(perhapsWrap, (node as LogicalNode).operands[0])
+    return getChildRsql(perhapsWrap, (node as Logical).operands[0])
   }
-  if (perhapsWrap && (node as LogicalNode).operator === 'OR') {
-    if ((node as LogicalNode).operands.length > 1) {
+  if (perhapsWrap && (node as Logical).operator === 'OR') {
+    if ((node as Logical).operands.length > 1) {
       return `(${rsql})`
     }
   }

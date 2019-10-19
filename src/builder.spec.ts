@@ -1,4 +1,4 @@
-import { buildReadable, ComparisonOperator, LogicalOperator } from './builder';
+import { buildReadable, ComparisonOperator, LogicalOperator } from './builder'
 
 describe('RSQL builder', () => {
   it('should transform x==5', () => {
@@ -299,14 +299,14 @@ describe('RSQL builder', () => {
   })
 
   describe('should escape rsql values', () => {
-    it('should escape single quote: x=q="It\'s complicated"', () => {
+    it('should escape single quote: x~="It\'s complicated"', () => {
       expect(
         buildReadable({
           selector: 'x',
-          comparison: ComparisonOperator.Search,
+          comparison: ComparisonOperator.Like,
           arguments: "It's complicated"
         })
-      ).toEqual('x=q="It\'s complicated"')
+      ).toEqual('x~="It\'s complicated"')
     })
 
     it("should escape special characters: x=='x==5'", () => {
@@ -319,14 +319,14 @@ describe('RSQL builder', () => {
       ).toEqual("x=='x==5'")
     })
 
-    it("should escape special characters: x=q='Hello!'", () => {
+    it("should escape special characters: x~='Hello!'", () => {
       expect(
         buildReadable({
           selector: 'x',
-          comparison: ComparisonOperator.Search,
+          comparison: ComparisonOperator.Like,
           arguments: 'Hello!'
         })
-      ).toEqual("x=q='Hello!'")
+      ).toEqual("x~='Hello!'")
     })
 
     it("should escape array arguments: x=in=('Hello!','Good==Bye')", () => {
