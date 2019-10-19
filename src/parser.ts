@@ -2,48 +2,53 @@ import * as peg from "pegjs";
 import { Node } from './types';
 
 const grammar = `
-or 
-  = head:and tail:("," and)* {
+or = 
+  head:and tail:("," and)* {
     if(tail.length == 0) return head;
-    var result = [head], i;
-    for (i = 0; i < tail.length; i++) {
+    var result = [head];
+    for (var i = 0; i < tail.length; i++) {
       result.push(tail[i][1]);
     }
     return { operator: "OR", operands: result};
   }
 
-and 
-  = head:constraint tail:(";" constraint)* {
-  if(tail.length == 0) return head;
-  var result = [head], i;
-  for (i = 0; i < tail.length; i++) {
-    result.push(tail[i][1]);
-  }
+and =
+  head:constraint tail:(";" constraint)* {
+    if(tail.length == 0) return head;
+    var result = [head];
+    for (var i = 0; i < tail.length; i++) {
+      result.push(tail[i][1]);
+    }
     return { operator: "AND", operands: result };
   }
 
 node = logical / comparison
 
-logical = "(" o:or ")" { return o; }
+logical = 
+  "(" o:or ")" { return o; }
 
-comparison = s:selector c:comparison_op a:arguments { 
-    return {selector: s, comparison: c, arguments: a} 
+comparison = 
+  s:selector c:comparison_op a:arguments { 
+    return { selector: s, comparison: c, arguments: a };
   }
 
 selector = unreserved_str
 
-comparison_op  = $comp_eq_ne / $comp_gt_lt
+comparison_op  = 
+  $comp_eq_ne / $comp_gt_lt
 
-comp_eq_ne     = ( "=" alpha* / "!" ) "="
+comp_eq_ne     = 
+  ( "=" alpha* / "!" ) "="
 
-comp_gt_lt     = ( ">" / "<" ) "="
+comp_gt_lt     = 
+  ( ">" / "<" ) "="
 
 alpha = [a-z] / [A-Z]
 
-arguments 
-  = "(" _ head:value _ tail:("," _ value _)* ")"  {
-    var result = [head], i;
-    for (i = 0; i < tail.length; i++) {
+arguments = 
+  "(" _ head:value _ tail:("," _ value _)* ")"  {
+    var result = [head];
+    for(var i = 0; i < tail.length; i++) {
       var arg = tail[i][2]
       result.push(arg);
     }
@@ -54,15 +59,18 @@ value = unreserved_str / double_quoted / single_quoted / integer
 
 unreserved_str = $unreserved+
 
-single_quoted = [\\'] v:(escaped / [^'\\\\])* [\\'] {return v.join("")}
+single_quoted = 
+  [\\'] v:(escaped / [^'\\\\])* [\\'] {return v.join("")}
 
-double_quoted = [\\"] v:(escaped / [^"\\\\])* [\\"] {return v.join("")}
+double_quoted = 
+  [\\"] v:(escaped / [^"\\\\])* [\\"] {return v.join("")}
 
 reserved = $["'();,=!~<>]
 
 unreserved = $[^"'();,=!~<> ]
 
-escaped = "\\\\" c:all_chars { return c; }
+escaped = 
+  "\\\\" c:all_chars { return c; }
 
 all_chars = $. 
 
@@ -80,10 +88,9 @@ _ "whitespace" = [ \\t]*
  *
  * <code>parser.parse("xbool==false")</code> returns
  * <code>{
- * "selector": "xbool",
- * // tslint:disable-next-line:jsdoc-format
- * "comparison": "==",
- * "arguments": "false"
+ *   "selector": "xbool",
+ *   "comparison": "==",
+ *   "arguments": "false"
  * }</code>
  */
 const parser = peg.generate(grammar)
