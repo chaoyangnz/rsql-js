@@ -55,7 +55,7 @@ arguments =
     return result;
   } / value
 
-value = unreserved_str / double_quoted / single_quoted / integer
+value = double_quoted / single_quoted / integer / unreserved_str
 
 unreserved_str = $unreserved+
 
