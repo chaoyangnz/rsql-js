@@ -29,7 +29,7 @@ group =
 
 comparison = 
   s:selector c:comparison_op a:arguments { 
-    return { selector: s, comparison: c, arguments: a };
+    return { selector: s, operator: c, arguments: a };
   }
 
 selector = unreserved_str

@@ -1,5 +1,5 @@
 import { encode } from 'mdurl'
-import { Comparison, Logical, LogicalOperator, Expression, Value } from './types'
+import { Comparison, Logical, LogicalOperator, Expression, Value, isLogical } from './types'
 
 export * from './types'
 
@@ -32,24 +32,22 @@ function toRsqlValue(value: Value | Value[]): string {
   return containsRsqlReservedCharacter(value) ? rsqlEscape(value) : value
 }
 
-export function build(node: Expression): string {
-  const value = buildReadable(node)
+export function build(exp: Expression): string {
+  const value = buildRsql(exp)
   return encode(value, encode.componentChars + '=:,;"\'<>#', false)
 }
 
-export function buildReadable(node: Expression): string {
-  return (node as Logical).operator
-    ? buildRsqlFromComplexNode(node as Logical)
-    : buildRsqlFromSimpleNode(node as Comparison)
+export function buildRsql(exp: Expression): string {
+  return isLogical(exp)
+    ? buildRsqlFromLogical(exp as Logical)
+    : buildRsqlFromComparison(exp as Comparison)
 }
 
-function buildRsqlFromSimpleNode(comparison: Comparison): string {
-  return (
-    toRsqlValue(comparison.selector) + comparison.comparison + toRsqlValue(comparison.arguments)
-  )
+function buildRsqlFromComparison(comparison: Comparison): string {
+  return toRsqlValue(comparison.selector) + comparison.operator + toRsqlValue(comparison.arguments)
 }
 
-function buildRsqlFromComplexNode({ operator, operands }: Logical): string {
+function buildRsqlFromLogical({ operator, operands }: Logical): string {
   return operands
     .map(child => getChildRsql(operator === LogicalOperator.And && operands.length > 1, child))
     .join(operator === LogicalOperator.Or ? ',' : ';')
@@ -65,17 +63,17 @@ function buildRsqlFromComplexNode({ operator, operands }: Logical): string {
  * AND parent needs to be wrapped.
  *
  * @param perhapsWrap The child node may need to be wrapped
- * @param node the child node to transform to rsql
+ * @param exp the child node to transform to rsql
  * @returns {string}
  */
-function getChildRsql(perhapsWrap: boolean, node: Expression): string {
-  const rsql = buildReadable(node)
-  if ((node as Logical).operands && (node as Logical).operands.length === 1) {
+function getChildRsql(perhapsWrap: boolean, exp: Expression): string {
+  const rsql = buildRsql(exp)
+  if ((exp as Logical).operands && (exp as Logical).operands.length === 1) {
     // Skip this node, render the only child node
-    return getChildRsql(perhapsWrap, (node as Logical).operands[0])
+    return getChildRsql(perhapsWrap, (exp as Logical).operands[0])
   }
-  if (perhapsWrap && (node as Logical).operator === 'OR') {
-    if ((node as Logical).operands.length > 1) {
+  if (perhapsWrap && (exp as Logical).operator === 'OR') {
+    if ((exp as Logical).operands.length > 1) {
       return `(${rsql})`
     }
   }

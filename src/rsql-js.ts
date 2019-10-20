@@ -2,6 +2,6 @@
 // import "core-js/fn/array.find"
 // ...
 
-export { build, buildReadable } from './builder'
+export { build, buildRsql } from './builder'
 export { parse } from './parser'
 export * from './types'

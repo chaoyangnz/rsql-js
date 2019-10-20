@@ -20,17 +20,23 @@ export enum ComparisonOperator {
   GreaterThanOrEqualToAlt = '=ge='
 }
 
+export type Operator = LogicalOperator | ComparisonOperator
+
 export type Value = string | number | boolean | null
 
 export interface Comparison {
   selector: string
-  comparison: ComparisonOperator
+  operator: ComparisonOperator
   arguments: Value | Value[]
 }
-
-export type Expression = Logical | Comparison
 
 export interface Logical {
   operator: LogicalOperator
   operands: Expression[]
+}
+
+export type Expression = Logical | Comparison
+
+export function isLogical(exp: Expression) {
+  return exp.operator === LogicalOperator.And || exp.operator === LogicalOperator.Or
 }

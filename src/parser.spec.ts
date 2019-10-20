@@ -5,7 +5,7 @@ describe('RSQL parser', () => {
   it('should parse x==5', () => {
     expect(parse('x==5')).toEqual({
       selector: 'x',
-      comparison: ComparisonOperator.Equals,
+      operator: ComparisonOperator.Equals,
       arguments: 5
     })
   })
@@ -16,12 +16,12 @@ describe('RSQL parser', () => {
       operands: [
         {
           selector: 'x',
-          comparison: ComparisonOperator.Equals,
+          operator: ComparisonOperator.Equals,
           arguments: 5
         },
         {
           selector: 'y',
-          comparison: ComparisonOperator.Equals,
+          operator: ComparisonOperator.Equals,
           arguments: 3
         }
       ]
@@ -34,12 +34,12 @@ describe('RSQL parser', () => {
       operands: [
         {
           selector: 'x',
-          comparison: ComparisonOperator.Equals,
+          operator: ComparisonOperator.Equals,
           arguments: 5
         },
         {
           selector: 'y',
-          comparison: ComparisonOperator.Equals,
+          operator: ComparisonOperator.Equals,
           arguments: 3.3
         }
       ]
@@ -49,7 +49,7 @@ describe('RSQL parser', () => {
   it("should parse empty-string argument: x==''", () => {
     expect(parse("x==''")).toEqual({
       selector: 'x',
-      comparison: ComparisonOperator.Equals,
+      operator: ComparisonOperator.Equals,
       arguments: ''
     })
   })
@@ -61,12 +61,12 @@ describe('RSQL parser', () => {
         operands: [
           {
             selector: 'z',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -82,19 +82,19 @@ describe('RSQL parser', () => {
             operands: [
               {
                 selector: 'z',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 3
               },
               {
                 selector: 'y',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 5
               }
             ]
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -110,19 +110,19 @@ describe('RSQL parser', () => {
             operands: [
               {
                 selector: 'x',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 5
               },
               {
                 selector: 'y',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 3
               }
             ]
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -138,19 +138,19 @@ describe('RSQL parser', () => {
             operands: [
               {
                 selector: 'x',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 5
               },
               {
                 selector: 'y',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 3
               }
             ]
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -169,7 +169,7 @@ describe('RSQL parser', () => {
                 operands: [
                   {
                     selector: 'x',
-                    comparison: ComparisonOperator.Equals,
+                    operator: ComparisonOperator.Equals,
                     arguments: 5
                   },
                   {
@@ -177,17 +177,17 @@ describe('RSQL parser', () => {
                     operands: [
                       {
                         selector: 'x',
-                        comparison: ComparisonOperator.Equals,
+                        operator: ComparisonOperator.Equals,
                         arguments: 5
                       },
                       {
                         selector: 'y',
-                        comparison: ComparisonOperator.Equals,
+                        operator: ComparisonOperator.Equals,
                         arguments: 3
                       },
                       {
                         selector: 'z',
-                        comparison: ComparisonOperator.Equals,
+                        operator: ComparisonOperator.Equals,
                         arguments: 3
                       }
                     ]
@@ -196,14 +196,14 @@ describe('RSQL parser', () => {
               },
               {
                 selector: 'z',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 3
               }
             ]
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -219,19 +219,19 @@ describe('RSQL parser', () => {
             operands: [
               {
                 selector: 'x',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 5
               },
               {
                 selector: 'y',
-                comparison: ComparisonOperator.Equals,
+                operator: ComparisonOperator.Equals,
                 arguments: 3
               }
             ]
           },
           {
             selector: 'w',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -244,12 +244,12 @@ describe('RSQL parser', () => {
         operands: [
           {
             selector: 'x',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 5
           },
           {
             selector: 'y',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -260,7 +260,7 @@ describe('RSQL parser', () => {
   it('should parse in constraint with array arguments: x=in=(A,B)', () => {
     expect(parse('x=in=(A,B)')).toEqual({
       selector: 'x',
-      comparison: ComparisonOperator.In,
+      operator: ComparisonOperator.In,
       arguments: ['A', 'B']
     })
   })
@@ -268,7 +268,7 @@ describe('RSQL parser', () => {
   it('should parse in constraint with string argument: x==A', () => {
     expect(parse('x==A')).toEqual({
       selector: 'x',
-      comparison: ComparisonOperator.Equals,
+      operator: ComparisonOperator.Equals,
       arguments: 'A'
     })
   })
@@ -277,7 +277,7 @@ describe('RSQL parser', () => {
     it('should escape single quote: x~="It\'s complicated"', () => {
       expect(parse('x~="It\'s complicated"')).toEqual({
         selector: 'x',
-        comparison: ComparisonOperator.Like,
+        operator: ComparisonOperator.Like,
         arguments: "It's complicated"
       })
     })
@@ -285,7 +285,7 @@ describe('RSQL parser', () => {
     it("should parse query with escape special characters: x=='x==5'", () => {
       expect(parse("x=='x==5'")).toEqual({
         selector: 'x',
-        comparison: ComparisonOperator.Equals,
+        operator: ComparisonOperator.Equals,
         arguments: 'x==5'
       })
     })
@@ -293,7 +293,7 @@ describe('RSQL parser', () => {
     it("should parse query with escape special characters: x~='Hello!'", () => {
       expect(parse("x~='Hello!'")).toEqual({
         selector: 'x',
-        comparison: ComparisonOperator.Like,
+        operator: ComparisonOperator.Like,
         arguments: 'Hello!'
       })
     })
@@ -301,7 +301,7 @@ describe('RSQL parser', () => {
     it("should parse query with escape array arguments: x=in=('Hello!','Good==Bye')", () => {
       expect(parse("x=in=('Hello!','Good==Bye')")).toEqual({
         selector: 'x',
-        comparison: ComparisonOperator.In,
+        operator: ComparisonOperator.In,
         arguments: ['Hello!', 'Good==Bye']
       })
     })

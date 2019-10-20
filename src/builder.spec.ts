@@ -1,11 +1,11 @@
-import { buildReadable, ComparisonOperator, LogicalOperator } from './builder'
+import { buildRsql, ComparisonOperator, LogicalOperator } from './builder'
 
 describe('RSQL builder', () => {
   it('should transform x==5', () => {
     expect(
-      buildReadable({
+      buildRsql({
         selector: 'x',
-        comparison: ComparisonOperator.Equals,
+        operator: ComparisonOperator.Equals,
         arguments: 5
       })
     ).toEqual('x==5')
@@ -13,17 +13,17 @@ describe('RSQL builder', () => {
 
   it('should transform x==5;y==3', () => {
     expect(
-      buildReadable({
+      buildRsql({
         operator: LogicalOperator.And,
         operands: [
           {
             selector: 'x',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 5
           },
           {
             selector: 'y',
-            comparison: ComparisonOperator.Equals,
+            operator: ComparisonOperator.Equals,
             arguments: 3
           }
         ]
@@ -33,9 +33,9 @@ describe('RSQL builder', () => {
 
   it("should transform empty-string argument: x==''", () => {
     expect(
-      buildReadable({
+      buildRsql({
         selector: 'x',
-        comparison: ComparisonOperator.Equals,
+        operator: ComparisonOperator.Equals,
         arguments: ''
       })
     ).toEqual("x==''")
@@ -44,7 +44,7 @@ describe('RSQL builder', () => {
   describe('should add brackets around OR expressions with AND parent', () => {
     it('should not wrap OR with single operand: z==3;w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -52,14 +52,14 @@ describe('RSQL builder', () => {
               operands: [
                 {
                   selector: 'z',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 3
                 }
               ]
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -69,7 +69,7 @@ describe('RSQL builder', () => {
 
     it('should not transform AND child of OR parent: z==3;y==5,w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.Or,
           operands: [
             {
@@ -77,19 +77,19 @@ describe('RSQL builder', () => {
               operands: [
                 {
                   selector: 'z',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 3
                 },
                 {
                   selector: 'y',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 5
                 }
               ]
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -99,7 +99,7 @@ describe('RSQL builder', () => {
 
     it('should wrap OR child of AND parent: (x==5,y==3);w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -107,19 +107,19 @@ describe('RSQL builder', () => {
               operands: [
                 {
                   selector: 'x',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 5
                 },
                 {
                   selector: 'y',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 3
                 }
               ]
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -129,7 +129,7 @@ describe('RSQL builder', () => {
 
     it('should skip single operand AND child of AND parent: (x==5,y==3);w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -140,12 +140,12 @@ describe('RSQL builder', () => {
                   operands: [
                     {
                       selector: 'x',
-                      comparison: ComparisonOperator.Equals,
+                      operator: ComparisonOperator.Equals,
                       arguments: 5
                     },
                     {
                       selector: 'y',
-                      comparison: ComparisonOperator.Equals,
+                      operator: ComparisonOperator.Equals,
                       arguments: 3
                     }
                   ]
@@ -154,7 +154,7 @@ describe('RSQL builder', () => {
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -164,7 +164,7 @@ describe('RSQL builder', () => {
 
     it('should correctly transform complex query: (x==5;(x==5,y==3,z==3),z==3);w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -175,7 +175,7 @@ describe('RSQL builder', () => {
                   operands: [
                     {
                       selector: 'x',
-                      comparison: ComparisonOperator.Equals,
+                      operator: ComparisonOperator.Equals,
                       arguments: 5
                     },
                     {
@@ -183,17 +183,17 @@ describe('RSQL builder', () => {
                       operands: [
                         {
                           selector: 'x',
-                          comparison: ComparisonOperator.Equals,
+                          operator: ComparisonOperator.Equals,
                           arguments: 5
                         },
                         {
                           selector: 'y',
-                          comparison: ComparisonOperator.Equals,
+                          operator: ComparisonOperator.Equals,
                           arguments: 3
                         },
                         {
                           selector: 'z',
-                          comparison: ComparisonOperator.Equals,
+                          operator: ComparisonOperator.Equals,
                           arguments: 3
                         }
                       ]
@@ -202,14 +202,14 @@ describe('RSQL builder', () => {
                 },
                 {
                   selector: 'z',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 3
                 }
               ]
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -219,7 +219,7 @@ describe('RSQL builder', () => {
 
     it('should drill down past single OR child when determining if child should be wrapped: (x==5,y==3);w==3', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -230,12 +230,12 @@ describe('RSQL builder', () => {
                   operands: [
                     {
                       selector: 'x',
-                      comparison: ComparisonOperator.Equals,
+                      operator: ComparisonOperator.Equals,
                       arguments: 5
                     },
                     {
                       selector: 'y',
-                      comparison: ComparisonOperator.Equals,
+                      operator: ComparisonOperator.Equals,
                       arguments: 3
                     }
                   ]
@@ -244,7 +244,7 @@ describe('RSQL builder', () => {
             },
             {
               selector: 'w',
-              comparison: ComparisonOperator.Equals,
+              operator: ComparisonOperator.Equals,
               arguments: 3
             }
           ]
@@ -254,7 +254,7 @@ describe('RSQL builder', () => {
 
     it('need not wrap only OR child of AND operator', () => {
       expect(
-        buildReadable({
+        buildRsql({
           operator: LogicalOperator.And,
           operands: [
             {
@@ -262,12 +262,12 @@ describe('RSQL builder', () => {
               operands: [
                 {
                   selector: 'x',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 5
                 },
                 {
                   selector: 'y',
-                  comparison: ComparisonOperator.Equals,
+                  operator: ComparisonOperator.Equals,
                   arguments: 3
                 }
               ]
@@ -280,9 +280,9 @@ describe('RSQL builder', () => {
 
   it('should transform in constraint with array arguments: x=in=(A,B)', () => {
     expect(
-      buildReadable({
+      buildRsql({
         selector: 'x',
-        comparison: ComparisonOperator.In,
+        operator: ComparisonOperator.In,
         arguments: ['A', 'B']
       })
     ).toEqual('x=in=(A,B)')
@@ -290,9 +290,9 @@ describe('RSQL builder', () => {
 
   it('should transform in constraint with string argument: x==A', () => {
     expect(
-      buildReadable({
+      buildRsql({
         selector: 'x',
-        comparison: ComparisonOperator.Equals,
+        operator: ComparisonOperator.Equals,
         arguments: 'A'
       })
     ).toEqual('x==A')
@@ -301,9 +301,9 @@ describe('RSQL builder', () => {
   describe('should escape rsql values', () => {
     it('should escape single quote: x~="It\'s complicated"', () => {
       expect(
-        buildReadable({
+        buildRsql({
           selector: 'x',
-          comparison: ComparisonOperator.Like,
+          operator: ComparisonOperator.Like,
           arguments: "It's complicated"
         })
       ).toEqual('x~="It\'s complicated"')
@@ -311,9 +311,9 @@ describe('RSQL builder', () => {
 
     it("should escape special characters: x=='x==5'", () => {
       expect(
-        buildReadable({
+        buildRsql({
           selector: 'x',
-          comparison: ComparisonOperator.Equals,
+          operator: ComparisonOperator.Equals,
           arguments: 'x==5'
         })
       ).toEqual("x=='x==5'")
@@ -321,9 +321,9 @@ describe('RSQL builder', () => {
 
     it("should escape special characters: x~='Hello!'", () => {
       expect(
-        buildReadable({
+        buildRsql({
           selector: 'x',
-          comparison: ComparisonOperator.Like,
+          operator: ComparisonOperator.Like,
           arguments: 'Hello!'
         })
       ).toEqual("x~='Hello!'")
@@ -331,9 +331,9 @@ describe('RSQL builder', () => {
 
     it("should escape array arguments: x=in=('Hello!','Good==Bye')", () => {
       expect(
-        buildReadable({
+        buildRsql({
           selector: 'x',
-          comparison: ComparisonOperator.In,
+          operator: ComparisonOperator.In,
           arguments: ['Hello!', 'Good==Bye']
         })
       ).toEqual("x=in=('Hello!','Good==Bye')")
