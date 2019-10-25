@@ -1,6 +1,6 @@
 {
   "name": "rsql-js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
   "main": "dist/rsql-js.umd.js",
@@ -58,7 +58,7 @@
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/test/"
+      "src/rsql-js.ts"
     ],
     "coverageThreshold": {
       "global": {
@@ -70,9 +70,6 @@
     },
     "collectCoverageFrom": [
       "src/*.{js,ts}"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/", "src/rsql-js.ts"
     ]
   },
   "prettier": {
