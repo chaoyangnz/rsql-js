@@ -91,7 +91,7 @@ _ "whitespace" = [ \\t]*
  *
  * import parser from 'parser'
  *
- * <code>parser.parse("xbool==false")</code> returns
+ * <code>parser.parse("enabled==false")</code> returns
  * <code>{
  *   "selector": "enabled",
  *   "comparison": "==",
