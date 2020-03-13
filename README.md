@@ -1,4 +1,4 @@
-![](https://github.com/chaoyangnz/rsql-js/workflows/rsql-js/badge.svg)
+![](https://github.com/cloudaffine/rsql-js/workflows/rsql-js/badge.svg)
 
 # RSQL parser and builder for Javascript
 
