@@ -1,5 +1,5 @@
 {
-  "name": "rsql-js",
+  "name": "@cloudaffine/rsql-js",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
@@ -9,7 +9,7 @@
   "files": [
     "dist"
   ],
-  "author": "Chao Yang <chaoyang.nz@gmail.com>",
+  "author": "Chao Yang <chao@yang.to>",
   "repository": {
     "type": "git",
     "url": ""
